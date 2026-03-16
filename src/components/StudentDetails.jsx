@@ -1,17 +1,23 @@
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
 function StudentDetails({ students }) {
   const { id } = useParams();
-  const student = students[id]; // assuming students array is passed as props
+  const student = students[id];
 
-  if (!student) return <p>Student not found.</p>;
+  if (!student) return (
+    <div style={{ padding: '1rem' }}>
+      <p>Student not found</p>
+      <Link to="/register">Back to Register</Link>
+    </div>
+  );
 
   return (
-    <div>
+    <div style={{ padding: '1rem' }}>
       <h2>Student Details</h2>
-      <p>Name: {student.name}</p>
-      <p>Email: {student.email}</p>
-      <p>Course: {student.course}</p>
+      <p><strong>Name:</strong> {student.name}</p>
+      <p><strong>Email:</strong> {student.email}</p>
+      <p><strong>Course:</strong> {student.course}</p>
+      <Link to="/register">Back to Register</Link>
     </div>
   );
 }

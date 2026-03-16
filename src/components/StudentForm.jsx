@@ -1,30 +1,52 @@
-import { useForm } from 'react-hook-form';
+import { useState } from 'react';
 
 function StudentForm({ addStudent }) {
-  const { register, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onChange' });
+  const [student, setStudent] = useState({ name: '', email: '', course: '' });
+  const [errors, setErrors] = useState({});
 
-  const onSubmit = (data) => {
-    addStudent(data);
+  const handleChange = (e) => {
+    setStudent({ ...student, [e.target.name]: e.target.value });
   };
 
+  const validate = () => {
+    const errs = {};
+    if (!student.name) errs.name = 'Name is required';
+    if (!student.email) {
+      errs.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(student.email)) {
+      errs.email = 'Email is invalid';
+    }
+    if (!student.course) errs.course = 'Course is required';
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validate()) {
+      addStudent(student);
+      setStudent({ name: '', email: '', course: '' });
+      setErrors({});
+    }
+  };
+
+  const isFormValid = student.name && student.email && student.course && Object.keys(errors).length === 0;
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit} style={{ marginBottom: '2rem' }}>
       <div>
-        <input {...register('name', { required: 'Name is required' })} placeholder="Name" />
-        {errors.name && <span style={{ color: 'red' }}>{errors.name.message}</span>}
+        <input type="text" name="name" placeholder="Name" value={student.name} onChange={handleChange} />
+        {errors.name && <span style={{ color: 'red', marginLeft: '1rem' }}>{errors.name}</span>}
       </div>
       <div>
-        <input {...register('email', { 
-          required: 'Email is required',
-          pattern: { value: /\S+@\S+\.\S+/, message: 'Invalid email' } 
-        })} placeholder="Email" />
-        {errors.email && <span style={{ color: 'red' }}>{errors.email.message}</span>}
+        <input type="email" name="email" placeholder="Email" value={student.email} onChange={handleChange} />
+        {errors.email && <span style={{ color: 'red', marginLeft: '1rem' }}>{errors.email}</span>}
       </div>
       <div>
-        <input {...register('course', { required: 'Course is required' })} placeholder="Course" />
-        {errors.course && <span style={{ color: 'red' }}>{errors.course.message}</span>}
+        <input type="text" name="course" placeholder="Course" value={student.course} onChange={handleChange} />
+        {errors.course && <span style={{ color: 'red', marginLeft: '1rem' }}>{errors.course}</span>}
       </div>
-      <button type="submit" disabled={!isValid}>Register</button>
+      <button type="submit" disabled={!isFormValid} style={{ marginTop: '1rem' }}>Register</button>
     </form>
   );
 }

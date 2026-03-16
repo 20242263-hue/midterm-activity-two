@@ -2,11 +2,9 @@ import { Link } from 'react-router-dom';
 
 function Navbar() {
   return (
-    <nav>
-      <ul>
-        <li><Link to="/home">Home</Link></li>
-        <li><Link to="/register">Register</Link></li>
-      </ul>
+    <nav style={{ padding: '1rem', borderBottom: '1px solid #ccc' }}>
+      <Link to="/home" style={{ marginRight: '1rem' }}>Home</Link>
+      <Link to="/register">Register</Link>
     </nav>
   );
 }
